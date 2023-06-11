@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package com.devproblems;                          // directory path, where auto generated files will be
+option java_multiple_files = true;                // to generate multiple files (for each service, message)
+
+message Empty {}               // empty message
+
+message IncidentInfo{          // message with info about our Incident
+  int32 id = 1;
+  string image = 2;
+  string coordinates = 3;
+  string report = 4;
+}
+
+message Id{                    // for some functions: get, delete by id
+  int32 value = 1;
+}
+
+message Status{                // for response to some functions
+  int32 value = 1;
+}
+
+
+// declaring Incident services: get, create, update, delete
+service Incident{
+  //server-streaming - asynchronous
+  // client sends one request - server will respond with stream of responses
+  rpc getIncidents (Empty) returns (stream IncidentInfo);
+
+  //unary - synchronous services
+  // client sends one request - server will respond with one response
+  rpc getIncident (IncidentInfo) returns (IncidentInfo);
+  rpc createIncident (IncidentInfo) returns (IncidentInfo);
+  rpc updateIncident (IncidentInfo) returns (IncidentInfo);
+  rpc deleteIncident (IncidentInfo) returns (Status);
+}
+
+service user{
+  rpc login(LoginRequest) returns (APIResponse);
+  rpc logout(Empty) returns (APIResponse);
+}
+
+message LoginRequest{
+  string username = 1;
+  string password = 2;
+}
+
+message APIResponse{
+  string responseMessage = 1;
+  int32 responseCode = 2;
+}
+
